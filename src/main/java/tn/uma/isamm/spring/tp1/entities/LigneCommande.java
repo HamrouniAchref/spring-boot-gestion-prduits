@@ -23,7 +23,7 @@ public class LigneCommande implements Serializable{
 	private int qte;
 	
 	@EmbeddedId
-	private PK_PROD_CMD pk;
+	private PK_PROD_CMD pk=new PK_PROD_CMD ();
 	@ManyToOne()
 	@JoinColumn(name="id_produit")
     @MapsId("idProduit")
@@ -82,11 +82,23 @@ public class LigneCommande implements Serializable{
 		this.commande = commande;
 		this.pk=pk;
 	}
+	public LigneCommande(PK_PROD_CMD pk,Commande commande) {
+		super();
+	
+		this.commande = commande;
+		this.pk=pk;
+	}
 	public Double getPrixTotalProduit()
 	{
 		return this.produit.getPrixProduit()*this.qte;
 		
 		
+	}
+
+	public LigneCommande(Produit produit) {
+		
+		this.produit=produit;
+		// TODO Auto-generated constructor stub
 	}
 
 

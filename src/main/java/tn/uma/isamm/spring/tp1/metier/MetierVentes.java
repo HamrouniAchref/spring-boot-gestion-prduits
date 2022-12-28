@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import tn.uma.isamm.spring.tp1.entities.AppRole;
 import tn.uma.isamm.spring.tp1.entities.AppUser;
 import tn.uma.isamm.spring.tp1.entities.Categorie;
+import tn.uma.isamm.spring.tp1.entities.Client;
 import tn.uma.isamm.spring.tp1.entities.Commande;
+import tn.uma.isamm.spring.tp1.entities.LigneCommande;
 import tn.uma.isamm.spring.tp1.entities.Produit;
 import tn.uma.isamm.spring.tp1.entities.QueryCommande;
 
@@ -33,6 +35,11 @@ public interface MetierVentes {
 	
 	public Page<QueryCommande> getAllCommandesSearch(Date dateDebut ,Date dateFin , int page, int size );
 	public Commande getCommandeById(long id);
+	public void saveLigneCommande(LigneCommande ligne);
+	public Commande saveCommande(Commande commande);
+
+	public List<Client> getClients();
+
 
 	
 	

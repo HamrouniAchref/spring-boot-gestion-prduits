@@ -20,12 +20,43 @@
 
 <body>
 	<div layout:fragment="contents">
-		<div class="card-body">
-		<div class="table-responsive">
-			<h1>commande</h1>
-			<h1 th:text="${commande.getPrixTotal()}"></h1>
+		
+			
+
+		<div class="row mt-2 ml-1 mr-1">
+			<div class="col-3"></div>
+			<div class="col-6">	
+				<div class="card  border-info">
+					<div class="card-header badge badge-info text-wrap">
+						<h6>Detail Commande</h6>
+					</div>		
+				
+					<div class="card-body">
+						<div class="table-responsive">		
+						<a class="btn mb-5 btn-sm btn-primary"
+						th:href="@{/admin/ajouterLigneCommande(id=${commande.numCommande})}">
+							<i class="fas fa-edit">ajouter un produit</i>
+						</a>
+						<h4 th:text="${'Code Commande : ' + commande.numCommande}"></h4>
+						<h4 th:text="${'Date Commande : ' + commande.dateCommande}"></h4>
+						<h4 th:text="${'Nom Client : ' + commande.client.nomClient}"></h4>
+						<h4 th:text="${'Adresse de Livraison : ' + commande.adresseLivraison}"></h4>
+						<h4 th:text="${'Prix Total : '+commande.getPrixTotal()}"></h4>
+						<h4 th:text="${'Etat Commande  : ' + commande.etatLivraison}"></h4>
+						<h2>liste des produits </h2>
+						<ul th:each="ligne:${commande.lignes}">
+							 <h5><li th:text="${'code produit  : ' + ligne.produit.codeProduit}"></li></h5>
+							 <li th:text="${'Quantite : ' + ligne.qte}"></li>
+							 <li th:text="${'prix unitaire  : ' + ligne.produit.prixProduit}"></li>
+							 <li th:text="${'prix total : ' + ligne.getPrixTotalProduit()}"></li>
+				
+						</ul>
+				</div>
+			</div>
 		</div>
-		</div>
+	</div>
+	</div>
+	</div>
 	</div>		
 
 

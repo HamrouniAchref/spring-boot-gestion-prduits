@@ -50,12 +50,9 @@
 							<div class="col-6">
 								<div class="text-right">
 									<a class="btn btn-sm btn-success center"
-										th:href="@{/admin/ajouterProduitAlimentaire}"> <i
-										class="fas fa-plus-circle"></i> Ajout P. Alimentaire
-									</a> <a class="btn btn-sm btn-success center"
-										th:href="@{/admin/ajouterProduitCosmetique}"> <i
-										class="fas fa-plus-circle"></i> Ajout P. cosmétique
-									</a>
+										th:href="@{/admin/ajouterCommande}"> <i
+										class="fas fa-plus-circle"></i> Ajout Commande
+									</a> 
 								</div>
 							</div>
 						</div>
@@ -76,11 +73,10 @@
 								</tr>
 								<tr th:each="c:${listeCommandes}">
 								
-									<!-- 								<td> -->
-									<!-- 									<a th:text="${f.code}" -->
-									<!-- 										th:href="@{/user/consulterformation(page=0, size=2,id=${f.id})}"></a> -->
-									<!-- 								</td>								 -->
-									<td th:text="${c.idCommande}"></td>
+								    <td> 
+									 	<a th:text="${c.idCommande}" 
+									 	th:href="@{'/user/commandes/'+${c.idCommande}}"></a> 
+									</td>								 
 									<td th:text="${c.dateCommande}"></td>
 									<td th:text="${c.nomClient}"></td>
 									<td th:text="${c.adresseLivraison}"></td>

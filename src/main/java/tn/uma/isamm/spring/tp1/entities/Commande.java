@@ -1,8 +1,10 @@
 package tn.uma.isamm.spring.tp1.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +18,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+
 @Entity
 @Table(name="COMMANDES")
 public class Commande{
@@ -24,6 +30,8 @@ public class Commande{
 	@GeneratedValue
 	private long numCommande;
 	@Column(name="DATE_CMD")
+	@DateTimeFormat(iso=ISO.DATE)
+
 	private Date dateCommande;
 	@Column(name="ADR_LIVRAISON")
 	private String adresseLivraison;
@@ -44,7 +52,7 @@ public class Commande{
 	private Client client;
 	
 	@OneToMany(mappedBy="commande")
-	private Set<LigneCommande> lignes = new HashSet<LigneCommande>();
+	private List<LigneCommande> lignes = new ArrayList<LigneCommande>();
 
 	public Commande() {
 		// TODO Auto-generated constructor stub
@@ -95,14 +103,16 @@ public class Commande{
 		this.client = client;
 	}
 
-	public Set<LigneCommande> getLignes() {
+	
+	
+	public List<LigneCommande> getLignes() {
 		return lignes;
 	}
 
-	public void setLignes(Set<LigneCommande> lignes) {
+	public void setLignes(List<LigneCommande> lignes) {
 		this.lignes = lignes;
 	}
-	
+
 	public Double getPrixTotal() {
 		Double somme=0.0;
 		for (LigneCommande ligneCommande : lignes) {
@@ -112,6 +122,11 @@ public class Commande{
 		return somme ;
 		
 	}
+	
+	
+	public void addLinge(LigneCommande ligne) {
+        this.lignes.add(ligne);
+    }
 	
 
 	

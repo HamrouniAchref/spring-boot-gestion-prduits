@@ -15,12 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 import tn.uma.isamm.spring.tp1.dao.AppRoleDAO;
 import tn.uma.isamm.spring.tp1.dao.AppUserDAO;
 import tn.uma.isamm.spring.tp1.dao.CategorieDAO;
+import tn.uma.isamm.spring.tp1.dao.ClientDAO;
 import tn.uma.isamm.spring.tp1.dao.CommandeDAO;
+import tn.uma.isamm.spring.tp1.dao.LigneCommandeDAO;
 import tn.uma.isamm.spring.tp1.dao.ProduitDAO;
 import tn.uma.isamm.spring.tp1.entities.AppRole;
 import tn.uma.isamm.spring.tp1.entities.AppUser;
 import tn.uma.isamm.spring.tp1.entities.Categorie;
+import tn.uma.isamm.spring.tp1.entities.Client;
 import tn.uma.isamm.spring.tp1.entities.Commande;
+import tn.uma.isamm.spring.tp1.entities.LigneCommande;
 import tn.uma.isamm.spring.tp1.entities.Produit;
 import tn.uma.isamm.spring.tp1.entities.QueryCommande;
 
@@ -44,6 +48,10 @@ public class MetierVentesImpl implements MetierVentes {
 	
 	@Autowired 
 	CommandeDAO commandeDAO;
+	@Autowired
+	LigneCommandeDAO  ligneCommandeDAO;
+	@Autowired
+	ClientDAO clientDAO;
 	
 
 	@Override
@@ -160,6 +168,34 @@ public class MetierVentesImpl implements MetierVentes {
 	public Commande getCommandeById(long id) {
 		
 		return commandeDAO.getById(id);
+	}
+
+	@Override
+	public void saveLigneCommande(LigneCommande ligne) {
+		ligneCommandeDAO.save(ligne);
+		
+	}
+
+	@Override
+	public List<Client> getClients() {
+		// TODO Auto-generated method stub
+		return clientDAO.findAll();
+	}
+
+	@Override
+	public Commande saveCommande(Commande cm) {
+		// TODO Auto-generated method stub
+		Commande commande=commandeDAO.save(cm);
+		for (LigneCommande ligne : cm.getLignes()) {
+			if(ligne != null && ligne.getQte()>0)
+			{
+				ligne.setCommande(commande);
+				ligneCommandeDAO.save(ligne);
+			}
+			
+		}
+		return commande;
+		
 	}
 	
 	
