@@ -1,20 +1,16 @@
 package tn.uma.isamm.spring.tp1.web;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import tn.uma.isamm.spring.tp1.entities.Client;
 import tn.uma.isamm.spring.tp1.entities.Commande;
 import tn.uma.isamm.spring.tp1.entities.LigneCommande;
+import tn.uma.isamm.spring.tp1.entities.PK_PROD_CMD;
 import tn.uma.isamm.spring.tp1.entities.Produit;
 import tn.uma.isamm.spring.tp1.entities.QueryCommande;
 import tn.uma.isamm.spring.tp1.metier.MetierVentes;
 
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ControlleurCommande {
@@ -127,6 +123,51 @@ public class ControlleurCommande {
 		
 		System.out.println(commande.getClient().getNomClient());
 		metierVentes.saveCommande(commande);
+		
+		
+		return "redirect:/user/commandes" ;
+ 	}
+	@RequestMapping("/admin/modifierCommande")
+	public String ModifierCommande(@RequestParam(name="id")Long id , Model model)
+	{
+		Commande commande=null ;
+		List<Client> clients = metierVentes.getClients();
+		if (id != null)
+		{
+			commande = metierVentes.getCommandeById(id);
+//			System.out.println(commande.getNumCommande());
+			
+		}
+		
+		List<Produit> produits = metierVentes.getProduits();
+		
+		for (Produit produit : produits) {
+			if (!commande.getLignes().contains(produit))
+			{
+				commande.addLinge(new LigneCommande(produit));
+				
+			}
+			
+		}
+
+		
+		
+		model.addAttribute("commande",commande);	
+		model.addAttribute("clients",clients);
+		
+		return "modifierCommande";
+ 	}
+	@PostMapping("/admin/modifierCommande")
+	public String modifierCommande(@ModelAttribute("commande") Commande commande, Model model)
+	{
+		
+		System.out.println(commande.getNumCommande());
+		for (LigneCommande ligne : commande.getLignes()) {
+			
+			ligne.setPk(new PK_PROD_CMD(ligne.getProduit().getCodeProduit(),commande.getNumCommande()));
+			
+		}
+		metierVentes.saveCommandeUpdate(commande);
 		
 		
 		return "redirect:/user/commandes" ;

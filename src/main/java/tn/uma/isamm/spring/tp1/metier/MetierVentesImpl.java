@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +24,7 @@ import tn.uma.isamm.spring.tp1.entities.Categorie;
 import tn.uma.isamm.spring.tp1.entities.Client;
 import tn.uma.isamm.spring.tp1.entities.Commande;
 import tn.uma.isamm.spring.tp1.entities.LigneCommande;
+import tn.uma.isamm.spring.tp1.entities.PK_PROD_CMD;
 import tn.uma.isamm.spring.tp1.entities.Produit;
 import tn.uma.isamm.spring.tp1.entities.QueryCommande;
 
@@ -164,6 +164,7 @@ public class MetierVentesImpl implements MetierVentes {
 		return commandeDAO.getAllCommandesSearch(dateDebut, dateFin, pr);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Commande getCommandeById(long id) {
 		
@@ -192,6 +193,27 @@ public class MetierVentesImpl implements MetierVentes {
 				ligne.setCommande(commande);
 				ligneCommandeDAO.save(ligne);
 			}
+			
+			
+		}
+		return commande;
+		
+	}
+	public Commande saveCommandeUpdate(Commande cm) {
+		// TODO Auto-generated method stub
+		
+		Commande commande=commandeDAO.save(cm);
+		for (LigneCommande ligne : cm.getLignes()) {
+			
+			if(ligne != null && ligne.getQte()>0)
+			{
+				ligne.setCommande(commande);
+				ligneCommandeDAO.save(ligne);
+			}
+			else {
+				ligneCommandeDAO.delete(ligne);
+			}
+			
 			
 		}
 		return commande;

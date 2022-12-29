@@ -39,6 +39,7 @@ public interface MetierVentes {
 	public Commande saveCommande(Commande commande);
 
 	public List<Client> getClients();
+	public Commande saveCommandeUpdate(Commande cm) ;
 
 
 	
