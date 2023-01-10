@@ -27,6 +27,24 @@ public interface CommandeDAO extends JpaRepository<Commande, Long>{
 			+"and c.dateCommande BETWEEN :dateDebut AND :dateFin "
 			+ "group by (c) ")
 	public Page<QueryCommande> getAllCommandesSearch(@Param("dateDebut")Date dateDebut,@Param("dateFin")Date dateFin,Pageable pageable);
+	@Query(value = "SELECT new tn.uma.isamm.spring.tp1.entities.QueryCommande(c.numCommande , c.dateCommande  , cl.nomClient ,c.adresseLivraison , SUM(p.prixProduit * l.qte) )  "
+			+ "FROM Commande c  , Produit p ,LigneCommande l , Client cl "
+			+ "where c.client = cl and c = l.commande and l.produit =p  "
+			+ "group by (c) "
+			+ "order by SUM(p.prixProduit * l.qte) desc  ")
+	public Page<QueryCommande> getAllSortCommandesBySomme(Pageable pageable);
+	@Query(value = "SELECT new tn.uma.isamm.spring.tp1.entities.QueryCommande(c.numCommande , c.dateCommande  , cl.nomClient ,c.adresseLivraison , SUM(p.prixProduit * l.qte) )  "
+			+ "FROM Commande c  , Produit p ,LigneCommande l , Client cl "
+			+ "where c.client = cl and c = l.commande and l.produit =p  "
+			+ "group by (c) "
+			+ "order by c.dateCommande desc  ")
+	public Page<QueryCommande> getAllSortCommandesByDate(Pageable pageable);
 	
-
+	@Query(value = "SELECT new tn.uma.isamm.spring.tp1.entities.QueryCommande(c.numCommande , c.dateCommande  , cl.nomClient ,c.adresseLivraison , SUM(p.prixProduit * l.qte) )  "
+			+ "FROM Commande c  , Produit p ,LigneCommande l , Client cl "
+			+ "where c.client = cl and c = l.commande and l.produit =p  "
+			+ "and c.etatLivraison = :etat "
+			+ "group by (c) ")
+	public Page<QueryCommande> getAllSortCommandesByEtat(@Param("etat")String etat,Pageable pageable);
+	
 }

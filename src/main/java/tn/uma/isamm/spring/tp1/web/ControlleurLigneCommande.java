@@ -25,6 +25,10 @@ public class ControlleurLigneCommande {
 	    @RequestParam(name = "errorMessage", defaultValue = "") String errorMessage,Model model) {
 		List<Produit> produits = metierVentes.getProduits();
 		Commande commande = metierVentes.getCommandeById(id);
+		if (commande!=null && commande.getEtatLivraison().equalsIgnoreCase("livrée"))
+		{
+			return "livree" ;
+		}
 		System.out.println(commande.getAdresseLivraison());
 		model.addAttribute("produits", produits);
 		model.addAttribute("ligneCommande", new LigneCommande());

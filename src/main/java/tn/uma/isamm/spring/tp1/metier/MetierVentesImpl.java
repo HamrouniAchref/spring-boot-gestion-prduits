@@ -1,12 +1,16 @@
 package tn.uma.isamm.spring.tp1.metier;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -201,24 +205,93 @@ public class MetierVentesImpl implements MetierVentes {
 	}
 	public Commande saveCommandeUpdate(Commande cm) {
 		// TODO Auto-generated method stub
-		
+		 List<LigneCommande> lignes = cm.getLignes();
+		 cm.setLignes(new ArrayList<LigneCommande>());
 		Commande commande=commandeDAO.save(cm);
-		for (LigneCommande ligne : cm.getLignes()) {
+		for (LigneCommande ligne : lignes) {
 			
 			if(ligne != null && ligne.getQte()>0)
 			{
 				ligne.setCommande(commande);
 				ligneCommandeDAO.save(ligne);
 			}
-			else {
-				ligneCommandeDAO.delete(ligne);
+			else
+			{
+				Boolean exist = ligneCommandeDAO.existsById(ligne.getPk());
+				if(exist)
+				{
+					ligneCommandeDAO.deleteById(ligne.getPk());
+					
+				}
+				
+				
 			}
+			
+			
 			
 			
 		}
 		return commande;
 		
 	}
+	private Boolean existe(List<LigneCommande> list,Produit p)
+	{
+		for (LigneCommande ligne : list) {
+			if (ligne.getProduit().getCodeProduit()==p.getCodeProduit())
+			{
+				return true ;
+			}
+			
+				
+			
+			
+		}
+		return false ;
+		
+	}
+	public Commande setLigneCommande(Commande commande) {
+	List<Produit> produits = getProduits();
+		
+		for (Produit produit : produits) {
+			if (!existe(commande.getLignes(),produit))
+			{
+				commande.addLinge(new LigneCommande(produit));
+				
+			}
+			
+		}
+		return commande ;
+	}
+	
+	@Override
+	public void deleteCommande(Long id) {
+		// TODO Auto-generated method stub
+		commandeDAO.deleteById(id);
+	}
+	
+	
+	@Override
+	public Page<QueryCommande> getAllSortCommandesBySomme (int page, int size)
+	{
+		PageRequest pr = PageRequest.of(page, size);
+		return commandeDAO.getAllSortCommandesBySomme(pr);
+		
+	}
+	
+	@Override
+	public Page<QueryCommande> getAllSortCommandesByDate(int page, int size)
+	{
+		PageRequest pr = PageRequest.of(page, size);
+		return commandeDAO.getAllSortCommandesByDate(pr);
+		
+	}
+	
+	@Override
+	public Page<QueryCommande> getAllSortCommandesByEtat(String etat,int page, int size){
+		PageRequest pr = PageRequest.of(page, size);
+		return commandeDAO.getAllSortCommandesByEtat(etat, pr);
+		
+	};
 	
 	
 

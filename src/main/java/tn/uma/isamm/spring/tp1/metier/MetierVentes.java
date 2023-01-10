@@ -40,6 +40,11 @@ public interface MetierVentes {
 
 	public List<Client> getClients();
 	public Commande saveCommandeUpdate(Commande cm) ;
+	public Commande setLigneCommande(Commande commande) ;
+	void deleteCommande(Long id);
+	Page<QueryCommande> getAllSortCommandesBySomme(int page, int size);
+	Page<QueryCommande> getAllSortCommandesByDate(int page, int size);
+	Page<QueryCommande> getAllSortCommandesByEtat(String etat, int page, int size);
 
 
 	

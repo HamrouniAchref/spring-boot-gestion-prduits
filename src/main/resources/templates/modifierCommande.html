@@ -39,7 +39,7 @@
 								    <input type="hidden" th:field ="${commande.numCommande}">
 									<input type="datetime-local"
 									th:required="required"
-									th:text=" ${#dates.format(commande.dateCommande, 'dd-MM-yyyy HH:mm')}"
+									
 									th:field="${commande.dateCommande}"
 										class="form-control" placeholder="code" />
 								</div>
@@ -61,10 +61,11 @@
 								<div class="col-sm-10">
 									<input type="hidden" th:field	="${commande.lignes[__${itemStat.index}__].produit}">
 
-									<input type="text" th:field	="${commande.lignes[__${itemStat.index}__].qte}">
+									<input th:required="required" type="text" th:field	="${commande.lignes[__${itemStat.index}__].qte}">
 									</p>
 								</div>
 							</div>
+							
 							
 
 
@@ -77,6 +78,16 @@
 									<select th:field="${commande.client}" class="form-control">
 										<option th:each="client:${clients}"
 											th:text="${client.nomClient}" th:value="${client.idClient}" ></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-2 col-form-label"> Etat</label>
+								<div class="col-sm-10">
+									<select th:field="${commande.etatLivraison}" class="form-control">
+										<option  value="en cours" >en cours</option>
+										<option value="livrée" >livrée</option>
+											
 									</select>
 								</div>
 							</div>

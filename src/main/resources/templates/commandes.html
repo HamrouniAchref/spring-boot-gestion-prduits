@@ -55,6 +55,25 @@
 									</a> 
 								</div>
 							</div>
+							<form class="col-3" th:action="@{/user/sortCommande}" method="post">
+							<div>
+									<select name="keyword" class="form-control" th:onchange="submit()">
+										<option  selected disabled>Choisir TRI...</option>
+										<option th:value="date">Tri par Date</option>
+										<option th:value="total">Tri par Total</option>
+									</select>
+									</div>
+							</form>
+							<form class="col-3 "th:action="@{/user/filterCommande}" method="post">
+							         <div>
+									<select name="keyword" class="form-control" th:onchange="submit()">
+										<option selected disabled>Choisir Filtre...</option>
+										
+										<option th:value="livrée">Livrée</option>
+										<option th:value="encore"> En cours</option>
+									</select>
+									</div>
+							</form>
 						</div>
 					</div>
 					<div class="card-body">

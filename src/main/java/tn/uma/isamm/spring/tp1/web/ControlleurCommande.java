@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import tn.uma.isamm.spring.tp1.entities.Client;
 import tn.uma.isamm.spring.tp1.entities.Commande;
@@ -112,13 +114,13 @@ public class ControlleurCommande {
 	@PostMapping("/admin/ajouterCommande")
 	public String sauvegarderCommande(@ModelAttribute("commande") Commande commande, Model model)
 	{
-		for (LigneCommande lign : commande.getLignes())
-		{
-			System.out.println(lign.getProduit().getDesigProduit());
-			System.out.println(lign.getQte());
-			
-			
-		}
+//		for (LigneCommande lign : commande.getLignes())
+//		{
+//			System.out.println(lign.getProduit().getDesigProduit());
+//			System.out.println(lign.getQte());
+//			
+//			
+//		}
 		
 		
 		System.out.println(commande.getClient().getNomClient());
@@ -139,16 +141,8 @@ public class ControlleurCommande {
 			
 		}
 		
-		List<Produit> produits = metierVentes.getProduits();
-		
-		for (Produit produit : produits) {
-			if (!commande.getLignes().contains(produit))
-			{
-				commande.addLinge(new LigneCommande(produit));
-				
-			}
-			
-		}
+	
+		commande = metierVentes.setLigneCommande(commande);
 
 		
 		
@@ -172,6 +166,78 @@ public class ControlleurCommande {
 		
 		return "redirect:/user/commandes" ;
  	}
+	
+	@GetMapping("/admin/supprimerCommande")
+	public String supprimerCommande(Long id, Long activePage, Long nbElements, Long size, RedirectAttributes ra) {
+		metierVentes.deleteCommande(id);
+		System.out.println(" ----"+activePage);
+		if(activePage>0 && ((nbElements-1)==(size * (activePage))))
+			activePage--;
+		ra.addAttribute("page", activePage);
+		return "redirect:/user/commandes";
+		
+	}
+	
+	
+	@PostMapping("/user/sortCommande")
+	public String sortCommande(Model model ,@RequestParam(name = "keyword") String keyword  ,@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "20") int size,
+			@RequestParam(name = "errorMessage", defaultValue = "") String errorMessage,
+			@RequestParam(name = "dateDebut" , defaultValue = "") String dateDebut,
+			@RequestParam(name = "dateFin" , defaultValue = "") String dateFin){
+		Page<QueryCommande> commandes = null;
+		    if(keyword.equalsIgnoreCase("total")) {
+		    	commandes = metierVentes.getAllSortCommandesBySomme(page, size);
+		    }
+		    else 
+		    {
+		    	commandes = metierVentes.getAllSortCommandesByDate(page, size);
+		    }
+		
+
+		    model.addAttribute("activePage", page);
+			model.addAttribute("size", size);
+			int[] taillePagination = IntStream.range(0, commandes.getTotalPages()).toArray();
+			model.addAttribute("taillePagination", taillePagination);
+			model.addAttribute("nbPages", commandes.getTotalPages());
+			model.addAttribute("nbElements", commandes.getTotalElements());
+			model.addAttribute("listeCommandes", commandes);
+			model.addAttribute("errorMessage", errorMessage);
+						
+		
+		return "commandes";
+	}
+	
+	
+	@PostMapping("/user/filterCommande")
+	public String filterCommande(Model model ,@RequestParam(name = "keyword") String keyword  ,@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "20") int size,
+			@RequestParam(name = "errorMessage", defaultValue = "") String errorMessage,
+			@RequestParam(name = "dateDebut" , defaultValue = "") String dateDebut,
+			@RequestParam(name = "dateFin" , defaultValue = "") String dateFin){
+			Page<QueryCommande> commandes = null;
+			if(keyword.equalsIgnoreCase("encore")) {
+				keyword="en cours";
+				
+			}
+		    
+		    commandes = metierVentes.getAllSortCommandesByEtat(keyword,page, size);
+		    
+		
+
+		    model.addAttribute("activePage", page);
+			model.addAttribute("size", size);
+			int[] taillePagination = IntStream.range(0, commandes.getTotalPages()).toArray();
+			model.addAttribute("taillePagination", taillePagination);
+			model.addAttribute("nbPages", commandes.getTotalPages());
+			model.addAttribute("nbElements", commandes.getTotalElements());
+			model.addAttribute("listeCommandes", commandes);
+			model.addAttribute("errorMessage", errorMessage);
+						
+		
+		return "commandes";
+	}
+	
 	
 
 }

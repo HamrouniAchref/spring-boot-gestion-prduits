@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,8 +31,7 @@ public class Commande{
 	@GeneratedValue
 	private long numCommande;
 	@Column(name="DATE_CMD")
-	@DateTimeFormat(iso=ISO.DATE)
-
+    @DateTimeFormat(pattern="yyyy-MM-dd'T'hh:mm")
 	private Date dateCommande;
 	@Column(name="ADR_LIVRAISON")
 	private String adresseLivraison;
